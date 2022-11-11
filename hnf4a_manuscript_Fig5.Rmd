@@ -15,6 +15,7 @@ library(RColorBrewer)
 library(pals) #Improved color palette options
 library(ggpubr) #Improved ggplot functions
 library(vegan)
+library(DESeq2)
 ```
 
 Alpha Diversity
@@ -226,7 +227,127 @@ barplot2.2 + scale_x_discrete(limits=rev)
 
 Deseq2
 
+```{r}
+hnf4a_dds <- phyloseq_to_deseq2(ps2.noctrlv2, ~ Genotypev2)
 
+```
+
+
+```{r}
+hnf4a_dds
+```
+
+
+```{r}
+# First we remove rows with very few counts E.g. 5
+hnf4a_dds <- hnf4a_dds[ rowSums(counts(hnf4a_dds)) > 5, ]
+```
+
+
+```{r}
+cts_hnf4a <- counts(hnf4a_dds)
+geoMeans_hnf4a <- apply(cts_hnf4a, 1, function(row) if (all(row == 0)) 0 else exp(mean(log(row[row != 0]))))
+dds_hnf4a <- estimateSizeFactors(hnf4a_dds, geoMeans=geoMeans_hnf4a)
+```
+
+
+
+```{r}
+dds_hnf4a <- DESeq(dds_hnf4a, test = "Wald", fitType = "parametric")
+
+```
+
+```{r}
+#Using the results table in Deseq2 to create a table with significant results for plotting and viewing this table to ensure it is properly formatted
+res_hnf4a = results(dds_hnf4a, cooksCutoff = FALSE)
+alpha = 0.01
+sigtab_hnf4a = res_hnf4a[which(res_hnf4a$padj < alpha), ]
+sigtab_hnf4a = cbind(as(sigtab_hnf4a, "data.frame"), as(tax_table(ps2.noctrlv2)[rownames(sigtab_hnf4a), ], "matrix"))
+head(sigtab_hnf4a)
+
+```
+
+
+```{r}
+#Saving Deseq object as tab separated values
+#write.table(sigtab_hnf4a, file = "Deseq2_hnf4a-flaring_WT-HET-vs-KO_ASV-names.tsv", row.names=TRUE, sep="\t")
+
+```
+
+
+```{r}
+#Which comparison is being made? This code shows that it is genotype "wt" vs "ko"
+#The second line of code dim(sigtab) shows number of differential taxa at the chosen alpha
+resultsNames(dds_hnf4a)
+dim(sigtab_hnf4a)
+```
+
+
+Repeating the above for inflamed vs. non-inflamed KO mice
+
+First, we need to remove all WT (Genotypev2) samples so we can compare just the inflamed and non-inflamed KO mice
+
+```{r}
+#Removing WT (Includes HET for Genotype2 variable)
+ps2.noctrlv2_noWT = subset_samples(ps2.noctrlv2, Genotypev2 != "WT")
+ps2.noctrlv2_noWT
+
+```
+
+```{r}
+hnf4a_noWT_dds <- phyloseq_to_deseq2(ps2.noctrlv2_noWT, ~ inflamed)
+
+```
+
+
+```{r}
+hnf4a_noWT_dds
+```
+
+
+```{r}
+# First we remove rows with very few counts E.g. 5
+hnf4a_noWT_dds <- hnf4a_noWT_dds[ rowSums(counts(hnf4a_noWT_dds)) > 5, ]
+```
+
+
+```{r}
+cts_hnf4a_noWT <- counts(hnf4a_noWT_dds)
+geoMeans_hnf4a_noWT <- apply(cts_hnf4a_noWT, 1, function(row) if (all(row == 0)) 0 else exp(mean(log(row[row != 0]))))
+dds_hnf4a_noWT <- estimateSizeFactors(hnf4a_noWT_dds, geoMeans=geoMeans_hnf4a_noWT)
+```
+
+
+
+```{r}
+dds_hnf4a_noWT <- DESeq(dds_hnf4a_noWT, test = "Wald", fitType = "parametric")
+
+```
+
+```{r}
+#Using the results table in Deseq2 to create a table with significant results for plotting and viewing this table to ensure it is properly formatted
+res_hnf4a_noWT = results(dds_hnf4a_noWT, cooksCutoff = FALSE)
+alpha = 0.01
+sigtab_hnf4a_noWT = res_hnf4a_noWT[which(res_hnf4a_noWT$padj < alpha), ]
+sigtab_hnf4a_noWT = cbind(as(sigtab_hnf4a_noWT, "data.frame"), as(tax_table(ps2.noctrlv2_noWT)[rownames(sigtab_hnf4a_noWT), ], "matrix"))
+head(sigtab_hnf4a_noWT)
+
+```
+
+
+```{r}
+#Saving Deseq object as tab separated values
+#write.table(sigtab_hnf4a_noWT, file = "Deseq2_hnf4a_noWT-inflamed-ko_Y-v-N_ASV-names.tsv", row.names=TRUE, sep="\t")
+
+```
+
+
+```{r}
+#Which comparison is being made? This code shows that it is genotype "wt" vs "ko"
+#The second line of code dim(sigtab) shows number of differential taxa at the chosen alpha
+resultsNames(dds_hnf4a_noWT)
+dim(sigtab_hnf4a_noWT)
+```
 
 
 ```{r}
