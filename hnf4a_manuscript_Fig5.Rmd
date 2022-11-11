@@ -77,6 +77,32 @@ head(df2)
 df1[["Genotype"]]
 ```
 
+Data preprocessing for ordination. Rare and low abundance taxa can swamp out major trends (E.g. Genotype)
+
+```{r}
+sample_min_count = 50
+
+ps2 %>%
+  prune_samples(sample_sums(.)>=sample_min_count, .) ->
+  ps2.sample_prune
+
+```
+
+```{r}
+min_count = 3
+min_sample_frac = 0.10
+
+prune.vec = filter_taxa(ps2.sample_prune, 
+                       function(x) sum(x >= min_count) >= (min_sample_frac*length(x)))
+ps2.st_prune = prune_taxa(prune.vec, ps2.sample_prune)
+ntaxa(ps2.st_prune)
+
+```
+
+```{r}
+ps2.st_prune.even = transform_sample_counts(ps2.st_prune, function(x) 1E6 * x/sum(x))
+
+```
 
 ```{r}
 alpha_measures_all <- c("Shannon", "Chao1", "Simpson")
@@ -116,11 +142,51 @@ adonis2(bc_dist ~ sample_data(ps2.noctrlv2)$inflamed)
 ```
 
 
-Panel 5A
+Panel 5A: PCoA plot colored according to genotype
+
+```{r}
+ps2.st_prune.even
+```
+
+Log transforming lipocalin (Lcn2) values
 
 
+```{r}
+ps2.st_prune.even@sam_data$lipocalin_log <- log10(ps2.st_prune.even@sam_data$lipocalin_ng)
+```
 
-Panel 5B
+```{r}
+ps2.st_prune.even = subset_samples(ps2.st_prune.even, !is.na(mouse_number))
+ps2.st_prune.even
+```
+
+```{r}
+ps2.st_prune.even = subset_samples(ps2.st_prune.even, note != "positive control")
+ps2.st_prune.even
+```
+
+
+```{r}
+ps2.st_prune.even.pcoa_bc <- ordinate(ps2.st_prune.even, "PCoA", "bray")
+p3test <- plot_ordination(ps2.st_prune.even, ps2.st_prune.even.pcoa_bc, type="samples", color="Genotype") + 
+  stat_ellipse(type = "norm") +
+  theme_bw() + scale_color_manual(values = c("#040404", "#ec3525", "#445ca4"))
+p3test
+
+```
+
+Panel 5B: PCoA plot colored according to log
+
+```{r}
+p7testlog <- plot_ordination(ps2.st_prune.even, ps2.st_prune.even.pcoa_bc, type="samples", color = "lipocalin_log", shape = "Genotype") +
+  scale_color_gradient(name = NULL,
+                       high = "#eae82e",
+                       low = "#2c2f81") +
+stat_ellipse(type = "norm") +
+  theme_bw()
+p7testlog
+```
+
 
 
 
