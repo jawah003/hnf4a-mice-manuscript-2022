@@ -3,10 +3,140 @@ title: "Hnf4a Manuscript Figure 5"
 output: html_notebook
 ---
 
+Loading packages
+
 ```{r}
-#Loading required packages
+#Loading required libraries
+library(ggplot2)
+library(plyr)
+library(tidyverse)
+library(phyloseq) #To open phyloseq objects output by Hardac
+library(RColorBrewer) 
+library(pals) #Improved color palette options
+library(ggpubr) #Improved ggplot functions
+library(vegan)
 ```
 
+Alpha Diversity
+
+
+```{r}
+#Opening phyloseq object without the Hearts and Parks (HP) samples. There should be 804 samples total
+
+ps2 <- read_rds("/Users/jay/Library/CloudStorage/Box-Box/Hardac output/Cece hnf4a flaring 5-21/phyloseq.rds")
+ps2
+```
+
+What does the sample_data look like?
+
+```{r}
+df1 <- ps2@sam_data
+head(df1)
+```
+
+First, we need to group HET and WT mice to compare alpha and beta div between WT and KO mice
+
+
+```{r}
+#Removing negative controls
+ps2.noctrl = subset_samples(ps2, !is.na(mouse_number))
+ps2.noctrl
+```
+
+```{r}
+#Removing positive controls
+ps2.noctrlv2 = subset_samples(ps2.noctrl, note != "positive control")
+ps2.noctrlv2
+
+```
+
+```{r}
+#Copying the genotype variable
+ps2.noctrlv2@sam_data$Genotypev2 <- ps2.noctrlv2@sam_data$Genotype
+ps2.noctrlv2
+
+```
+
+```{r}
+ps2.noctrlv2@sam_data$Genotypev2 <- gsub("HET", "WT", ps2.noctrlv2@sam_data$Genotypev2)
+```
+
+Let us look at the new sample data header
+
+```{r}
+df2 <- ps2.noctrlv2@sam_data
+head(df2)
+```
+
+```{r}
+#Let us confirm that all HETs were converted to WT
+ df2[["Genotypev2"]]
+```
+
+```{r}
+df1[["Genotype"]]
+```
+
+
+```{r}
+alpha_measures_all <- c("Shannon", "Chao1", "Simpson")
+ga1 <- plot_richness(ps2.noctrlv2, measures = alpha_measures_all, x ="Genotypev2", color = "Genotypev2") + geom_boxplot() +theme_minimal() +scale_color_brewer(palette = "Set1")
+ga1
+```
+
+Are the differences in alpha div significant?
+
+```{r}
+erich <- estimate_richness(ps2.noctrlv2, measures = c("Chao1","Shannon","Simpson"))
+ttest1 <- t(sapply(erich, function(x) unlist(kruskal.test(x~sample_data(ps2.noctrlv2)$Genotypev2)[c("estimate","p.value","statistic","conf.int")])))
+ttest1
+```
+
+Repeating for inflamed vs. non-inflamed mice
+
+```{r}
+erich <- estimate_richness(ps2.noctrlv2, measures = c("Chao1","Shannon","Simpson"))
+ttest1 <- t(sapply(erich, function(x) unlist(kruskal.test(x~sample_data(ps2.noctrlv2)$inflamed)[c("estimate","p.value","statistic","conf.int")])))
+ttest1
+```
+
+Beta Diversity
+
+
+```{r}
+bc_dist = phyloseq::distance(ps2.noctrlv2, method="bray", weighted=F)
+adonis2(bc_dist ~ sample_data(ps2.noctrlv2)$Genotypev2)
+```
+
+Repeating for inflamed vs. non-inflamed mice
+
+```{r}
+bc_dist = phyloseq::distance(ps2.noctrlv2, method="bray", weighted=F)
+adonis2(bc_dist ~ sample_data(ps2.noctrlv2)$inflamed)
+```
+
+
+Panel 5A
+
+
+
+Panel 5B
+
+
+
+
+Panel 5C
+
+
+
+Deseq2
+
+
+
+
+```{r}
+sessionInfo()
+```
 
 
 
