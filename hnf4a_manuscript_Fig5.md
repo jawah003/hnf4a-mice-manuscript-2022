@@ -55,13 +55,13 @@ Alpha Diversity
 ``` r
 #Opening phyloseq object without the Hearts and Parks (HP) samples. There should be 804 samples total
 
-ps2 <- read_rds("/Users/jay/Library/CloudStorage/Box-Box/Hardac output/Cece hnf4a flaring 5-21/phyloseq.rds")
+ps2 <- read_rds("phyloseq_v2.rds")
 ps2
 ```
 
     ## phyloseq-class experiment-level object
     ## otu_table()   OTU Table:         [ 844 taxa and 64 samples ]
-    ## sample_data() Sample Data:       [ 64 samples by 21 sample variables ]
+    ## sample_data() Sample Data:       [ 64 samples by 22 sample variables ]
     ## tax_table()   Taxonomy Table:    [ 844 taxa by 7 taxonomic ranks ]
     ## refseq()      DNAStringSet:      [ 844 reference sequences ]
 
@@ -72,34 +72,34 @@ df1 <- ps2@sam_data
 head(df1)
 ```
 
-    ##    X.SampleID experiment_number mouse_number Genotype Mouse.age..wks.
-    ## 1           1                 3            1       KO              52
-    ## 10         10                 3           22      HET              52
-    ## 11         11                 3           23      HET              52
-    ## 12         12                 4            1       KO              52
-    ## 13         13                 4            2       KO              52
-    ## 14         14                 4            4       KO              52
-    ##    sample_date date_extracted kit_lot fecal_wt note flaring inflamed diarrhea
-    ## 1        43684          44294  207377   0.0408            N        Y        Y
-    ## 10       43684          44294  207377   0.0234            N        N        N
-    ## 11       43684          44294  207377   0.0163            N        N        N
-    ## 12       43907          44294  207377   0.0255            N        N        N
-    ## 13       43907          44294  207377   0.0258            N        N        N
-    ## 14       43907          44294  207377   0.0299            N        N        N
-    ##    diarrhea_score lipocalin_ng mouse_wt  pf_yield pf_clusters   q30
-    ## 1               2 7313.9942390     26.9 136273422      271461 74.20
-    ## 10              0    0.8192842     29.3 103464208      206104 73.07
-    ## 11              0    6.4629661     25.6 138336140      275570 73.83
-    ## 12              0   17.6071227     30.1 123082368      245184 74.78
-    ## 13              0   17.0971810     30.4 126987426      252963 73.98
-    ## 14              0   35.5633870     27.6 123554248      246124 72.69
-    ##    avg_quality_score      barcode
-    ## 1              31.64 CCGTAAGACCAG
-    ## 10             31.40 CTTCAGTTCGCC
-    ## 11             31.56 AGCTTCGATTCA
-    ## 12             31.76 GATACGTCCTGA
-    ## 13             31.61 TCATACTGCTAG
-    ## 14             31.34 ACTCTCAAGTGG
+    ##    X.SampleID experiment_number new_mouse_number_for_panel_C mouse_number
+    ## 1           1                 3                            1            1
+    ## 10         10                 3                           39           22
+    ## 11         11                 3                           40           23
+    ## 12         12                 4                           11            1
+    ## 13         13                 4                           12            2
+    ## 14         14                 4                           14            4
+    ##    Genotype Mouse.age..wks. sample_date date_extracted kit_lot fecal_wt note
+    ## 1        KO              52       43684          44294  207377   0.0408     
+    ## 10      HET              52       43684          44294  207377   0.0234     
+    ## 11      HET              52       43684          44294  207377   0.0163     
+    ## 12       KO              52       43907          44294  207377   0.0255     
+    ## 13       KO              52       43907          44294  207377   0.0258     
+    ## 14       KO              52       43907          44294  207377   0.0299     
+    ##    flaring inflamed diarrhea diarrhea_score lipocalin_ng mouse_wt  pf_yield
+    ## 1        N        Y        Y              2 7313.9942390     26.9 136273422
+    ## 10       N        N        N              0    0.8192842     29.3 103464208
+    ## 11       N        N        N              0    6.4629661     25.6 138336140
+    ## 12       N        N        N              0   17.6071227     30.1 123082368
+    ## 13       N        N        N              0   17.0971810     30.4 126987426
+    ## 14       N        N        N              0   35.5633870     27.6 123554248
+    ##    pf_clusters   q30 avg_quality_score      barcode
+    ## 1       271461 74.20             31.64 CCGTAAGACCAG
+    ## 10      206104 73.07             31.40 CTTCAGTTCGCC
+    ## 11      275570 73.83             31.56 AGCTTCGATTCA
+    ## 12      245184 74.78             31.76 GATACGTCCTGA
+    ## 13      252963 73.98             31.61 TCATACTGCTAG
+    ## 14      246124 72.69             31.34 ACTCTCAAGTGG
 
 First, we need to group HET and WT mice to compare alpha and beta div
 between WT and KO mice
@@ -112,7 +112,7 @@ ps2.noctrl
 
     ## phyloseq-class experiment-level object
     ## otu_table()   OTU Table:         [ 844 taxa and 58 samples ]
-    ## sample_data() Sample Data:       [ 58 samples by 21 sample variables ]
+    ## sample_data() Sample Data:       [ 58 samples by 22 sample variables ]
     ## tax_table()   Taxonomy Table:    [ 844 taxa by 7 taxonomic ranks ]
     ## refseq()      DNAStringSet:      [ 844 reference sequences ]
 
@@ -124,7 +124,7 @@ ps2.noctrlv2
 
     ## phyloseq-class experiment-level object
     ## otu_table()   OTU Table:         [ 844 taxa and 52 samples ]
-    ## sample_data() Sample Data:       [ 52 samples by 21 sample variables ]
+    ## sample_data() Sample Data:       [ 52 samples by 22 sample variables ]
     ## tax_table()   Taxonomy Table:    [ 844 taxa by 7 taxonomic ranks ]
     ## refseq()      DNAStringSet:      [ 844 reference sequences ]
 
@@ -136,7 +136,7 @@ ps2.noctrlv2
 
     ## phyloseq-class experiment-level object
     ## otu_table()   OTU Table:         [ 844 taxa and 52 samples ]
-    ## sample_data() Sample Data:       [ 52 samples by 22 sample variables ]
+    ## sample_data() Sample Data:       [ 52 samples by 23 sample variables ]
     ## tax_table()   Taxonomy Table:    [ 844 taxa by 7 taxonomic ranks ]
     ## refseq()      DNAStringSet:      [ 844 reference sequences ]
 
@@ -151,34 +151,34 @@ df2 <- ps2.noctrlv2@sam_data
 head(df2)
 ```
 
-    ##    X.SampleID experiment_number mouse_number Genotype Mouse.age..wks.
-    ## 1           1                 3            1       KO              52
-    ## 10         10                 3           22      HET              52
-    ## 11         11                 3           23      HET              52
-    ## 12         12                 4            1       KO              52
-    ## 13         13                 4            2       KO              52
-    ## 14         14                 4            4       KO              52
-    ##    sample_date date_extracted kit_lot fecal_wt note flaring inflamed diarrhea
-    ## 1        43684          44294  207377   0.0408            N        Y        Y
-    ## 10       43684          44294  207377   0.0234            N        N        N
-    ## 11       43684          44294  207377   0.0163            N        N        N
-    ## 12       43907          44294  207377   0.0255            N        N        N
-    ## 13       43907          44294  207377   0.0258            N        N        N
-    ## 14       43907          44294  207377   0.0299            N        N        N
-    ##    diarrhea_score lipocalin_ng mouse_wt  pf_yield pf_clusters   q30
-    ## 1               2 7313.9942390     26.9 136273422      271461 74.20
-    ## 10              0    0.8192842     29.3 103464208      206104 73.07
-    ## 11              0    6.4629661     25.6 138336140      275570 73.83
-    ## 12              0   17.6071227     30.1 123082368      245184 74.78
-    ## 13              0   17.0971810     30.4 126987426      252963 73.98
-    ## 14              0   35.5633870     27.6 123554248      246124 72.69
-    ##    avg_quality_score      barcode Genotypev2
-    ## 1              31.64 CCGTAAGACCAG         KO
-    ## 10             31.40 CTTCAGTTCGCC         WT
-    ## 11             31.56 AGCTTCGATTCA         WT
-    ## 12             31.76 GATACGTCCTGA         KO
-    ## 13             31.61 TCATACTGCTAG         KO
-    ## 14             31.34 ACTCTCAAGTGG         KO
+    ##    X.SampleID experiment_number new_mouse_number_for_panel_C mouse_number
+    ## 1           1                 3                            1            1
+    ## 10         10                 3                           39           22
+    ## 11         11                 3                           40           23
+    ## 12         12                 4                           11            1
+    ## 13         13                 4                           12            2
+    ## 14         14                 4                           14            4
+    ##    Genotype Mouse.age..wks. sample_date date_extracted kit_lot fecal_wt note
+    ## 1        KO              52       43684          44294  207377   0.0408     
+    ## 10      HET              52       43684          44294  207377   0.0234     
+    ## 11      HET              52       43684          44294  207377   0.0163     
+    ## 12       KO              52       43907          44294  207377   0.0255     
+    ## 13       KO              52       43907          44294  207377   0.0258     
+    ## 14       KO              52       43907          44294  207377   0.0299     
+    ##    flaring inflamed diarrhea diarrhea_score lipocalin_ng mouse_wt  pf_yield
+    ## 1        N        Y        Y              2 7313.9942390     26.9 136273422
+    ## 10       N        N        N              0    0.8192842     29.3 103464208
+    ## 11       N        N        N              0    6.4629661     25.6 138336140
+    ## 12       N        N        N              0   17.6071227     30.1 123082368
+    ## 13       N        N        N              0   17.0971810     30.4 126987426
+    ## 14       N        N        N              0   35.5633870     27.6 123554248
+    ##    pf_clusters   q30 avg_quality_score      barcode Genotypev2
+    ## 1       271461 74.20             31.64 CCGTAAGACCAG         KO
+    ## 10      206104 73.07             31.40 CTTCAGTTCGCC         WT
+    ## 11      275570 73.83             31.56 AGCTTCGATTCA         WT
+    ## 12      245184 74.78             31.76 GATACGTCCTGA         KO
+    ## 13      252963 73.98             31.61 TCATACTGCTAG         KO
+    ## 14      246124 72.69             31.34 ACTCTCAAGTGG         KO
 
 ``` r
 #Let us confirm that all HETs were converted to WT
@@ -327,10 +327,10 @@ adonis2(bc_dist ~ sample_data(ps2.noctrlv2)$inflamed)
     ## Number of permutations: 999
     ## 
     ## adonis2(formula = bc_dist ~ sample_data(ps2.noctrlv2)$inflamed)
-    ##                                    Df SumOfSqs      R2      F Pr(>F)   
-    ## sample_data(ps2.noctrlv2)$inflamed  1   0.4340 0.05697 3.0203  0.003 **
-    ## Residual                           50   7.1851 0.94303                 
-    ## Total                              51   7.6191 1.00000                 
+    ##                                    Df SumOfSqs      R2      F Pr(>F)    
+    ## sample_data(ps2.noctrlv2)$inflamed  1   0.4340 0.05697 3.0203  0.001 ***
+    ## Residual                           50   7.1851 0.94303                  
+    ## Total                              51   7.6191 1.00000                  
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
@@ -342,7 +342,7 @@ ps2.st_prune.even
 
     ## phyloseq-class experiment-level object
     ## otu_table()   OTU Table:         [ 265 taxa and 64 samples ]
-    ## sample_data() Sample Data:       [ 64 samples by 21 sample variables ]
+    ## sample_data() Sample Data:       [ 64 samples by 22 sample variables ]
     ## tax_table()   Taxonomy Table:    [ 265 taxa by 7 taxonomic ranks ]
     ## refseq()      DNAStringSet:      [ 265 reference sequences ]
 
@@ -359,7 +359,7 @@ ps2.st_prune.even
 
     ## phyloseq-class experiment-level object
     ## otu_table()   OTU Table:         [ 265 taxa and 58 samples ]
-    ## sample_data() Sample Data:       [ 58 samples by 22 sample variables ]
+    ## sample_data() Sample Data:       [ 58 samples by 23 sample variables ]
     ## tax_table()   Taxonomy Table:    [ 265 taxa by 7 taxonomic ranks ]
     ## refseq()      DNAStringSet:      [ 265 reference sequences ]
 
@@ -370,7 +370,7 @@ ps2.st_prune.even
 
     ## phyloseq-class experiment-level object
     ## otu_table()   OTU Table:         [ 265 taxa and 52 samples ]
-    ## sample_data() Sample Data:       [ 52 samples by 22 sample variables ]
+    ## sample_data() Sample Data:       [ 52 samples by 23 sample variables ]
     ## tax_table()   Taxonomy Table:    [ 265 taxa by 7 taxonomic ranks ]
     ## refseq()      DNAStringSet:      [ 265 reference sequences ]
 
@@ -398,7 +398,63 @@ p7testlog
 
 ![](hnf4a_manuscript_Fig5_files/figure-gfm/unnamed-chunk-24-1.png)<!-- -->
 
-Panel 5C
+Panel 5C: Relative Abundance plot in the same order as the lipocalin
+heatmap
+
+``` r
+#Should add up to 64 samples total, with controls removed it should be 52
+
+ps2.pct = transform_sample_counts(ps2, function(x) 100 * x/sum(x))
+ps2.pct
+```
+
+    ## phyloseq-class experiment-level object
+    ## otu_table()   OTU Table:         [ 844 taxa and 64 samples ]
+    ## sample_data() Sample Data:       [ 64 samples by 22 sample variables ]
+    ## tax_table()   Taxonomy Table:    [ 844 taxa by 7 taxonomic ranks ]
+    ## refseq()      DNAStringSet:      [ 844 reference sequences ]
+
+``` r
+ps2.pct.noctrl1 = subset_samples(ps2.pct, !is.na(new_mouse_number_for_panel_C))
+ps2.pct.noctrl1
+```
+
+    ## phyloseq-class experiment-level object
+    ## otu_table()   OTU Table:         [ 844 taxa and 52 samples ]
+    ## sample_data() Sample Data:       [ 52 samples by 22 sample variables ]
+    ## tax_table()   Taxonomy Table:    [ 844 taxa by 7 taxonomic ranks ]
+    ## refseq()      DNAStringSet:      [ 844 reference sequences ]
+
+``` r
+ps2.pct.noctrl = subset_samples(ps2.pct.noctrl1, note == "")
+ps2.pct.noctrl
+```
+
+    ## phyloseq-class experiment-level object
+    ## otu_table()   OTU Table:         [ 844 taxa and 52 samples ]
+    ## sample_data() Sample Data:       [ 52 samples by 22 sample variables ]
+    ## tax_table()   Taxonomy Table:    [ 844 taxa by 7 taxonomic ranks ]
+    ## refseq()      DNAStringSet:      [ 844 reference sequences ]
+
+``` r
+top25 <- names(sort(taxa_sums(ps2.pct.noctrl), decreasing=TRUE))[1:25]
+ps.top25 <- prune_taxa(top25, ps2.pct.noctrl)
+barplot2.2 <- plot_bar(ps.top25, x=as.character('new_mouse_number_for_panel_C'), fill = "Genus") + 
+  geom_bar(stat = "identity", position = "stack", size=0)+ scale_fill_manual(values = as.vector(watlington())) + coord_flip() + theme_bw() +theme(legend.position = "bottom", legend.box = "horizontal")
+barplot2.2
+```
+
+![](hnf4a_manuscript_Fig5_files/figure-gfm/unnamed-chunk-26-1.png)<!-- -->
+
+``` r
+barplot2.2$data$new_mouse_number_for_panel_C <- as.factor(barplot2.2$data$new_mouse_number_for_panel_C)
+```
+
+``` r
+barplot2.2 + scale_x_discrete(limits=rev)
+```
+
+![](hnf4a_manuscript_Fig5_files/figure-gfm/unnamed-chunk-28-1.png)<!-- -->
 
 Deseq2
 

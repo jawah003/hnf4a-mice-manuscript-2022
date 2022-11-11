@@ -23,7 +23,7 @@ Alpha Diversity
 ```{r}
 #Opening phyloseq object without the Hearts and Parks (HP) samples. There should be 804 samples total
 
-ps2 <- read_rds("/Users/jay/Library/CloudStorage/Box-Box/Hardac output/Cece hnf4a flaring 5-21/phyloseq.rds")
+ps2 <- read_rds("phyloseq_v2.rds")
 ps2
 ```
 
@@ -188,9 +188,40 @@ p7testlog
 ```
 
 
-Panel 5C
+Panel 5C: Relative Abundance plot in the same order as the lipocalin heatmap
 
 
+```{r}
+#Should add up to 64 samples total, with controls removed it should be 52
+
+ps2.pct = transform_sample_counts(ps2, function(x) 100 * x/sum(x))
+ps2.pct
+
+ps2.pct.noctrl1 = subset_samples(ps2.pct, !is.na(new_mouse_number_for_panel_C))
+ps2.pct.noctrl1
+
+ps2.pct.noctrl = subset_samples(ps2.pct.noctrl1, note == "")
+ps2.pct.noctrl
+
+
+```
+
+```{r}
+top25 <- names(sort(taxa_sums(ps2.pct.noctrl), decreasing=TRUE))[1:25]
+ps.top25 <- prune_taxa(top25, ps2.pct.noctrl)
+barplot2.2 <- plot_bar(ps.top25, x=as.character('new_mouse_number_for_panel_C'), fill = "Genus") + 
+  geom_bar(stat = "identity", position = "stack", size=0)+ scale_fill_manual(values = as.vector(watlington())) + coord_flip() + theme_bw() +theme(legend.position = "bottom", legend.box = "horizontal")
+barplot2.2
+```
+
+
+```{r}
+barplot2.2$data$new_mouse_number_for_panel_C <- as.factor(barplot2.2$data$new_mouse_number_for_panel_C)
+```
+
+```{r}
+barplot2.2 + scale_x_discrete(limits=rev)
+```
 
 
 Deseq2
