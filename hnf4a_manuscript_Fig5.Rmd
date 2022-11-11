@@ -1,6 +1,6 @@
 ---
 title: "Hnf4a Manuscript Figure 5"
-output: html_notebook
+output: github_document
 ---
 
 Loading packages
@@ -188,10 +188,8 @@ p7testlog
 ```
 
 
-
-
-
 Panel 5C
+
 
 
 
