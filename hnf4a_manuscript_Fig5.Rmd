@@ -22,7 +22,6 @@ Alpha Diversity
 
 
 ```{r}
-#Opening phyloseq object without the Hearts and Parks (HP) samples. There should be 804 samples total
 
 ps2 <- read_rds("phyloseq_v2.rds")
 ps2
