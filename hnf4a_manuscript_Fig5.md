@@ -178,8 +178,6 @@ library(DESeq2)
 Alpha Diversity
 
 ``` r
-#Opening phyloseq object without the Hearts and Parks (HP) samples. There should be 804 samples total
-
 ps2 <- read_rds("phyloseq_v2.rds")
 ps2
 ```
@@ -453,7 +451,7 @@ adonis2(bc_dist ~ sample_data(ps2.noctrlv2)$inflamed)
     ## 
     ## adonis2(formula = bc_dist ~ sample_data(ps2.noctrlv2)$inflamed)
     ##                                    Df SumOfSqs      R2      F Pr(>F)   
-    ## sample_data(ps2.noctrlv2)$inflamed  1   0.4340 0.05697 3.0203  0.003 **
+    ## sample_data(ps2.noctrlv2)$inflamed  1   0.4340 0.05697 3.0203  0.004 **
     ## Residual                           50   7.1851 0.94303                 
     ## Total                              51   7.6191 1.00000                 
     ## ---
