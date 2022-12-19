@@ -22,10 +22,105 @@ library(DESeq2)
 Panel 6A PCoA plot
 
 
+```{r}
+ps2 <- read_rds("phyloseq_lipocalin_HET-WT.rds")
+ps2
+```
 
 Panel 6B PCoA plot Axis a over time with GLM statistics
 
+The N/A sample doesn't add much to the analysis, removing this for the rest of the session
 
+```{r}
+ps2 = subset_samples(ps2, genotype != "N/A")
+```
+
+
+
+Data preprocessing for ordination. Rare and low abundance taxa can swamp out major trends (E.g. Genotype)
+
+```{r}
+sample_min_count = 50
+
+ps2 %>%
+  prune_samples(sample_sums(.)>=sample_min_count, .) ->
+  ps2.sample_prune
+
+```
+
+```{r}
+min_count = 3
+min_sample_frac = 0.10
+
+prune.vec = filter_taxa(ps2.sample_prune, 
+                       function(x) sum(x >= min_count) >= (min_sample_frac*length(x)))
+ps2.st_prune = prune_taxa(prune.vec, ps2.sample_prune)
+ntaxa(ps2.st_prune)
+
+```
+
+```{r}
+ps2.st_prune.even = transform_sample_counts(ps2.st_prune, function(x) 1E6 * x/sum(x))
+
+```
+
+```{r}
+ps2.st_prune.even.pcoa_bc <- ordinate(ps2.st_prune.even, "PCoA", "bray")
+pltest <- plot_ordination(ps2.st_prune.even, ps2.st_prune.even.pcoa_bc, type="samples", color="genotype")
+pltest
+
+```
+
+```{r}
+#This changes the variable "age" to numeric
+class(sample_data(ps2.st_prune.even)[["age"]]) <- "numeric"
+```
+
+```{r}
+p7 <- plot_ordination(ps2.st_prune.even, ps2.st_prune.even.pcoa_bc, type="samples", color="age", shape = "genotype") +
+  scale_color_gradient(name = NULL,
+                       high = "#FF8000",
+                       low = "#FFE5CC")+ theme_bw()
+p7
+```
+
+Plotting just PC Axis 1 stacked over time
+
+```{r}
+df_pcoa <- p7$data
+head(df_pcoa)
+```
+
+Example taken from this link: http://www.sthda.com/english/wiki/ggplot2-scatter-plots-quick-start-guide-r-software-and-data-visualization
+
+
+
+```{r}
+p2 <- ggplot(df_pcoa, aes(x=age, y=Axis.1, color=genotype)) + geom_point() +theme_bw()
+
+p2
+```
+
+```{r}
+
+df_pcoa$age <- as.factor(df_pcoa$age)
+sapply(df_pcoa, class)
+```
+
+```{r}
+model_pcoa <- glm(df_pcoa$Axis.1 ~ genotype2 + age, data = df_pcoa)
+```
+
+
+```{r}
+summary(model_pcoa)$coef
+```
+
+```{r}
+#Writing to dataframe 
+df_pcoa_genotype2 <- as.data.frame(summary(model_pcoa)$coef)
+head(df_pcoa_genotype2)
+```
 
 
 DESeq2 analysis of WT+HET vs KO
