@@ -17,6 +17,7 @@ library(pals) #Improved color palette options
 library(ggpubr) #Improved ggplot functions
 library(vegan)
 library(DESeq2)
+library(ALDEx2)
 ```
 
 Panel 6A PCoA plot
@@ -199,6 +200,12 @@ ds2 + ggtitle("Log2fold change in WT+HET vs. KO")
 
 ALDEx2 correlation of Log2(Lcn2) vs. CLR transformed ASV counts
 
+```{r}
+ps <- read_rds("phyloseq_hetgroup_log2lipo-diarrhea-factor-10-2020.rds")
+ps
+```
+
+
 
 Correlation (Spearman) of Delta Log2(Lcn2) vs. Delta ASVs
 
@@ -207,7 +214,7 @@ Panel 6C Relative Abundance of top 20 ASV for each mouse over 52 Weeks
 
 
 
-Alpha diversity
+
 
 
 
