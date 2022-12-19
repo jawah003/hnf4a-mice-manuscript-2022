@@ -125,6 +125,77 @@ head(df_pcoa_genotype2)
 
 DESeq2 analysis of WT+HET vs KO
 
+```{r}
+hnfdds2 <- phyloseq_to_deseq2(ps2, ~ genotype2)
+hnfdds2
+```
+
+
+```{r}
+# First we remove rows with very few counts E.g. 5
+hnfdds2 <- hnfdds2[ rowSums(counts(hnfdds2)) > 5, ]
+```
+
+```{r}
+cts <- counts(hnfdds2)
+geoMeans <- apply(cts, 1, function(row) if (all(row == 0)) 0 else exp(mean(log(row[row != 0]))))
+dds3 <- estimateSizeFactors(hnfdds2, geoMeans=geoMeans)
+```
+
+```{r}
+dds3 <- DESeq(dds3, test = "Wald", fitType = "parametric")
+
+```
+
+```{r}
+resultsNames(dds3)
+```
+
+
+
+```{r}
+#Using the results table in Deseq2 to create a table with significant results for plotting and viewing this table to ensure it is properly formatted
+res = results(dds3, cooksCutoff = FALSE)
+alpha = 0.01
+sigtab = res[which(res$padj < alpha), ]
+sigtab = cbind(as(sigtab, "data.frame"), as(tax_table(ps2)[rownames(sigtab), ], "matrix"))
+head(sigtab)
+```
+
+```{r}
+dim(sigtab)
+```
+
+
+```{r}
+#Saving lipocalin flaring Deseq object as tab separated values
+#write.table(sigtab, file = "Deseq2_HET-WT_vs_KO_6-18-2020_V2.tsv", row.names=TRUE, sep="\t")
+
+```
+
+
+```{r}
+#Which comparison is being made? This code shows that it is flare condition "Yes" vs "No"
+#The second line of code dim(sigtab) shows that there are 56 differential taxa
+resultsNames(dds3)
+dim(sigtab)
+```
+
+```{r}
+#Just coloring by species, 6-18-2020, repeating this with the genotype 2 label
+x = tapply(sigtab$log2FoldChange, sigtab$Phylum, function(x) max(x))
+x = sort(x, TRUE)
+sigtab$Phylum = factor(as.character(sigtab$Phylum), levels=names(x))
+# Genus order
+x = tapply(sigtab$log2FoldChange, sigtab$Genus, function(x) max(x))
+x = sort(x, TRUE)
+sigtab$Genus = factor(as.character(sigtab$Genus), levels=names(x))
+ds2 <- ggplot(sigtab, aes(x=Genus, y=log2FoldChange, color=Species)) + geom_point(size=6) + 
+  theme(axis.text.x = element_text(angle = -90, hjust = 0, vjust=0.5))
+ds2 + ggtitle("Log2fold change in WT+HET vs. KO")
+
+```
+
 
 ALDEx2 correlation of Log2(Lcn2) vs. CLR transformed ASV counts
 
